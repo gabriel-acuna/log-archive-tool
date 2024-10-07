@@ -1,0 +1,45 @@
+#!bin/bash
+log_directory=""
+out_directory="/home/$(whoami)/compressed_logs"
+
+show_initial_message() {
+  echo "----------------------------------------\n"
+  echo "\t**** LOG ARCHIVE TOOL ***\n"
+  echo "----------------------------------------\n"
+  echo "Use the flag --help to know how to use it!"
+}
+
+show_help() {
+  echo "Provide the log directory as an argument when running the tool.\n"
+  echo "log-archive <log-directory>"
+}
+
+is_directory() {
+  if [ ! -d $1 ]; then
+    echo "The log directory does not exist.";
+    exit;
+  else
+    log_directory=$1
+  fi
+}
+
+check_out_directory() {
+ if [ ! -d $out_directory ]; then mkdir -p $out_directory; fi
+}
+
+
+if [ -z "$1" ];then show_initial_message; exit; fi
+
+
+if [ $1 = '--help' ];
+then
+  show_help;
+  exit;
+else
+ is_directory $1
+fi
+
+check_out_directory
+
+tar -czvf "$out_directory/logs_archive_$(date +"%Y%m%d_%H%M%S").tar.gz" -C $1 .
+echo "Saved as $out_dir/logs_archive_$(date +"%Y%m%d_%H%M%S").tar.gz"
